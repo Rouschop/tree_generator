@@ -25,8 +25,10 @@ def tree(path: Path, prefix='', is_dir=None):
     if is_dir:
         tree_symbols = [colored(tee, 'red')] * (len(files) - 1) + [colored(last, 'red')]
     for tree_symbol, file in zip(tree_symbols, files):
-        # print(tree_symbol, file)
-        yield prefix + tree_symbol + colored(file.name, 'blue')
+        if not is_dir:
+            yield prefix + tree_symbol + file.name
+        if is_dir:
+            yield prefix + tree_symbol + colored(file.name, 'blue')
         if file.is_dir():  # Also print out the contents of directories with correct symbols
             if tree_symbol == tee:
                 symbol = colored(branch, 'red')
