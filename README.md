@@ -25,4 +25,20 @@ optional arguments:
   -p , --path   Specify relative path
 ```
 
+Example output:
+
+```
+└── a3
+    ├── old1
+    ├── old2
+    ├── old3
+    ├── old4
+    ├── old5
+    └── new_dir
+        ├── file1
+        ├── file2
+        ├── file3
+
+```
+
 Python version used is python3.9
