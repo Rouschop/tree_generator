@@ -27,26 +27,32 @@ def tree(dir_path: Path, prefix='', is_dir=None):
     if not is_dir:
         tree_symbols = [tee] * (len(files) - 1) + [last]
     if is_dir:
-        color += 1
-        if color == 6:
-            color = 0
         tree_symbols = [colored(tee, colors[color])] * (len(files) - 1) + [colored(last, colors[color])]
     for tree_symbol, file in zip(tree_symbols, files):
         if not is_dir:
             yield prefix + tree_symbol + file.name
         if is_dir:
-            yield prefix + tree_symbol + colored(file.name, 'blue')
-        if file.is_dir():  # Also print out the contents of directories with correct symbols
+            yield prefix + tree_symbol + colored(file.name, colors[color])
+        if file.is_dir():  # Also print out the contents of directories
             if tree_symbol == tee:
                 symbol = colored(branch, 'red')
+            if tree_symbol == colored(last, colors[color]):  # Change color every time last symbol is printed
+                symbol = space
+                color += 1
+                if color == 6:
+                    color = 0
             else:  # Without tree looks like: │   │   │   │   └── origin
                 symbol = space
             yield from tree(file, prefix=prefix + symbol, is_dir=True)
 
 
-if path:
-    for line in tree(dir_path=pathlib.Path(__file__).parent.absolute() / path):
-        print(line)
-else:
-    for line in tree(dir_path=pathlib.Path(__file__).parent.absolute()):
-        print(line)
+try:
+    if path:
+        for line in tree(dir_path=pathlib.Path(__file__).parent.absolute() / path):
+            print(line)
+    else:
+        for line in tree(dir_path=pathlib.Path(__file__).parent.absolute() / 'files'):
+            print(line)
+except IOError as e:
+    print("Please specify a valid path!")
+    print(e)
